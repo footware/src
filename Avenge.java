@@ -2,6 +2,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,9 +22,24 @@ public class Avenge extends JFrame{
 	
 	int val = 0;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		Avenge mainFrame = new Avenge();
 		mainFrame.setVisible(true);
+		//Oracle JDBC Driverのロード
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		//データベース接続
+		Connection con = DriverManager.getConnection("jdbc:mysql://192.168.0.3:3306/test?autoReconnect=true&useSSL=false", "avenge", "ghost2580");
+		Statement st = con.createStatement();
+		int x = st.executeUpdate("insert into test(num) values(2)");
+		ResultSet rs = st.executeQuery("select * from test");
+		
+		while (rs.next()){
+			int num = rs.getInt(1);
+			System.out.println(num);
+		}
+		rs.close();
+		st.close();
+		con.close();
 	}
 	
 	Avenge(){
